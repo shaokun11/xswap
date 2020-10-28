@@ -6,7 +6,7 @@ import { InjectedConnector } from '@web3-react/injected-connector'
 import { appAction, useApp } from '../../state/app'
 import { useDispatch } from 'react-redux'
 import { initTestContract } from '../../utils/api'
-import { signActions } from '../../state/sign'
+import { signActions, useSignState } from '../../state/sign'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -46,9 +46,20 @@ export default function Header() {
     }
     useEffect(() => {
         web3.account && initTestContract(web3.library, web3.account)
+    }, [web3.library])
+
+    useEffect(() => {
         web3.account && dispatch(signActions.updateAmount(web3.account))
         web3.account && dispatch(signActions.updateNonce(web3.account))
     }, [web3.library, web3.account])
+
+    useEffect(() => {
+        setTimeout(function() {
+            web3.account && dispatch(signActions.updateAmount(web3.account))
+            web3.account && dispatch(signActions.updateNonce(web3.account))
+        }, 3000)
+    }, [])
+
     useEffect(function() {
         web3.activate(injected)
     }, [])

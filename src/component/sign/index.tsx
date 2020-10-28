@@ -56,8 +56,8 @@ export default function EIP712(p: { value: string }) {
             primaryType: 'Test',
             message: {
                 owner: web3.account,
-                amount: 10,
-                nonce: 0,
+                amount: amount + 10,
+                nonce,
             },
         })
         web3.library.provider.request(

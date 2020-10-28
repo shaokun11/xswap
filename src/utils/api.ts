@@ -119,14 +119,16 @@ const abi_test = [
 ]
 const testContractAddress = '0x9F8C390b7048395d4DeBc7636031aD992115C303'
 let testContractIns
+export let provider :ethers.providers.Provider
 
-export function getContractIns() {
+export function getContractIns():ethers.Contract {
     return testContractIns
 }
 
-export function initTestContract(provider: any,account:string) {
+export function initTestContract(p: any,account:string) {
+    provider = p
     const  ins = new ethers.Contract(testContractAddress, abi_test, provider)
-    testContractIns = ins.connect(provider.getSigner(account))
+    testContractIns = ins.connect(p.getSigner(account))
     return testContractIns
 }
 
