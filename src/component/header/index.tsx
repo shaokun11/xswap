@@ -1,5 +1,5 @@
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
-import { AppBar, Box, Button, Grid, Toolbar, Typography } from '@material-ui/core'
+import { AppBar, Box, Button, Grid, Toolbar, Typography, IconButton } from '@material-ui/core'
 import React, { useEffect, useState } from 'react'
 import { useWeb3React } from '@web3-react/core'
 import { InjectedConnector } from '@web3-react/injected-connector'
@@ -7,6 +7,7 @@ import { appAction, useApp } from '../../state/app'
 import { useDispatch } from 'react-redux'
 import { initTestContract } from '../../utils/api'
 import { signActions, useSignState } from '../../state/sign'
+import IconTheme from '@material-ui/icons/Brightness6'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -65,11 +66,9 @@ export default function Header() {
             <Grid item className={classes.account}>
                 {web3.account}
             </Grid>
-            <Button
-                onClick={switchTheme}
-                variant={'text'}>
-                switch theme
-            </Button>
+            <IconButton onClick={switchTheme}>
+                <IconTheme  />
+            </IconButton>
             <Button variant={'text'}
                     onClick={connect}
                     disabled={!!web3.account}>

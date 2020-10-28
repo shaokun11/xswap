@@ -32,15 +32,15 @@ const updateAmount = createAsyncThunk<{ hash: string }, {
             provider.getTransactionReceipt(result.hash).then(res => {
                 if (res) {
                     dispatch(signActions.updateTxResult({
-                        status: res.status !== 0,
+                        status: res.status !== 0 ? 1 : 2,
                         hash: result.hash,
                     }))
                     if (res.status === 1) {
-                        setTimeout(function(){
+                        setTimeout(function() {
                             let state = getState() as AppState
                             dispatch(signActions.getMyNonce(state.app.account))
                             dispatch(signActions.getMyAmount(state.app.account))
-                        },2000)
+                        }, 500)
                     }
                 } else {
                     setTimeout(request, 2000)
@@ -58,7 +58,7 @@ const signSlice = createSlice({
     initialState: {
         amount: 0,
         nonce: 0,
-        hashArr: [] as { hash: string, txResult: boolean }[],
+        hashArr: [] as { hash: string, txResult: 0 | 1 | 2 }[],
     },
     reducers: {
         updateTxResult: ((state, action) => {
@@ -78,7 +78,7 @@ const signSlice = createSlice({
         [updateAmount.fulfilled.toString()]: (state, action) => {
             state.hashArr.push({
                 hash: action.payload.hash,
-                txResult: false,
+                txResult: 0,
             })
         },
     },

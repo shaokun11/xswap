@@ -1,10 +1,26 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { useWeb3React } from '@web3-react/core'
-import { Button, List, ListItemText, Theme } from '@material-ui/core'
+import {
+    Button,
+    Card,
+    CircularProgress,
+    IconButton,
+    List,
+    ListItem,
+    ListItemIcon,
+    ListItemText,
+    TextField,
+    Theme,
+    withStyles,
+} from '@material-ui/core'
 import { makeStyles } from '@material-ui/styles'
 import { createStyles } from '@material-ui/core/styles'
 import { signActions, useSignState } from '../../state/sign'
 import { useDispatch } from 'react-redux'
+import FileCopyIcon from '@material-ui/icons/FileCopy'
+import DoneIcon from '@material-ui/icons/Done'
+import CloseIcon from '@material-ui/icons/Close'
+import { green, grey, red } from '@material-ui/core/colors'
 
 const eip712Obj = {
     types: {
@@ -30,25 +46,85 @@ const eip712Obj = {
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         root: {
-            '& > div': {
-                margin: '10px 20px',
-                wordWrap: 'break-word',
+            display: 'flex',
+            height: '80%',
+        },
+        panel: {
+            height: 'calc(100% - 48px)',
+        },
+        child: {
+            overflowY: 'auto',
+            flexGrow: 2,
+            height: '100%',
+            '&::-webkit-scrollbar': {
+                width: '0.4em',
             },
+            '&::-webkit-scrollbar-track': {
+                boxShadow: 'inset 0 0 6px rgba(0,0,0,0.00)',
+                webkitBoxShadow: 'inset 0 0 6px rgba(0,0,0,0.00)',
+            },
+            '&::-webkit-scrollbar-thumb': {
+                backgroundColor: '#837979',
+            },
+        },
+        childDisplay: {
+            flexGrow: 1,
+            display: 'flex',
+            height: '100%',
+            flexDirection: 'column',
+            '& > div': {
+                height: '50%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+            },
+        },
+        btn: {
+            display: 'flex',
+            height: '20%',
+            alignItems: 'center',
+            margin: '0 20px',
+            justifyContent: 'space-around',
         },
     }),
 )
 
+const XTextField = withStyles((t: Theme) => (
+    {
+        root: {
+            '& .MuiInput-underline:after': {
+                borderBottomColor: t.palette.text.primary,
+            },
+        },
+    }
+))(TextField)
+
+const useStyles2 = makeStyles({
+    root: {
+        minWidth: 0,
+    },
+})
 export default function EIP712(p: { value: string }) {
     const web3 = useWeb3React()
     const classes = useStyles()
+    const classes2 = useStyles2()
     const dispatch = useDispatch()
-    const { nonce, amount } = useSignState()
+    const { nonce, amount, hashArr } = useSignState()
+    const [inputV, setInputV] = useState(10)
+    const [sendBtnIsEnable, setSendBtnIsEnable] = useState(false)
     const [signatureObj, setSignature] = useState({
         r: '0x',
         s: '0x',
         v: 27,
         signature: '0x',
     })
+    useEffect(() => {
+        setSendBtnIsEnable(!hashArr.every(item => item.txResult > 0))
+    }, [hashArr])
+    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setInputV(parseInt(event.target.value))
+    }
+
     const btnClickSign = () => {
         const data = JSON.stringify({
             types: eip712Obj.types,
@@ -56,7 +132,7 @@ export default function EIP712(p: { value: string }) {
             primaryType: 'Test',
             message: {
                 owner: web3.account,
-                amount: 10,
+                amount: inputV,
                 nonce,
             },
         })
@@ -73,7 +149,7 @@ export default function EIP712(p: { value: string }) {
             dispatch(signActions.updateAmount(
                 {
                     player: web3.account!!,
-                    amount: 10,
+                    amount: inputV,
                     v,
                     r,
                     s,
@@ -81,20 +157,50 @@ export default function EIP712(p: { value: string }) {
             ))
         })
     }
+
     return <div role="tabpanel"
+                className={classes.panel}
                 hidden={p.value !== 'eip712'}>
-        <List className={classes.root}>
-            <ListItemText
-                aria-multiline={'true'}
-                primary={'signature:' + signatureObj.signature} />
-            <ListItemText primary={'r :' + signatureObj.r} />
-            <ListItemText primary={'s :' + signatureObj.s} />
-            <ListItemText primary={'v :' + signatureObj.v} />
-            <ListItemText primary={'nonce :' + nonce} />
-            <ListItemText primary={'amount :' + amount} />
-        </List>
-        <Button onClick={btnClickSign}>
-            sign
-        </Button>
+        <Card className={classes.root}>
+            <Card className={classes.childDisplay}>
+                <Card>
+                    amount :{amount}
+                </Card>
+                <Card>
+                    nonce :{nonce}
+                </Card>
+            </Card>
+            <List className={classes.child}>
+                {hashArr.map((item,i) => {
+                    return <ListItem key={i}>
+                        {item.txResult === 0 ?
+                            <CircularProgress size={20} style={{ color: grey['300'] }} />
+                            : item.txResult === 1 ? <ListItemIcon className={classes2.root}>
+                                <DoneIcon style={{ color: green['300'] }} />
+                            </ListItemIcon> : <ListItemIcon className={classes2.root}>
+                                <CloseIcon style={{ color: red['300'] }} />
+                            </ListItemIcon>}
+                        <ListItemText style={{marginLeft:"10px"}}>
+                            {item.hash.slice(0, 12) + '******' + item.hash.slice(-12)}
+                        </ListItemText>
+                        <IconButton className={classes2.root}>
+                            <FileCopyIcon  />
+                        </IconButton>
+                    </ListItem>
+                })}
+
+            </List>
+        </Card>
+        <div className={classes.btn}>
+            <XTextField
+                defaultValue={10}
+                onChange={handleChange}
+                type="number" />
+            <Button
+                disabled={sendBtnIsEnable}
+                onClick={btnClickSign}>
+                approve add amount
+            </Button>
+        </div>
     </div>
 }
