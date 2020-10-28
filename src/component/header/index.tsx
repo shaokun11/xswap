@@ -49,19 +49,13 @@ export default function Header() {
     }, [web3.library])
 
     useEffect(() => {
-        web3.account && dispatch(signActions.updateAmount(web3.account))
-        web3.account && dispatch(signActions.updateNonce(web3.account))
+        web3.account && dispatch(signActions.getMyAmount(web3.account))
+        web3.account && dispatch(signActions.getMyNonce(web3.account))
+        web3.account && dispatch(appAction.updateAccount(web3.account))
     }, [web3.library, web3.account])
 
-    useEffect(() => {
-        setTimeout(function() {
-            web3.account && dispatch(signActions.updateAmount(web3.account))
-            web3.account && dispatch(signActions.updateNonce(web3.account))
-        }, 3000)
-    }, [])
-
     useEffect(function() {
-        web3.activate(injected)
+        connect()
     }, [])
     return <AppBar>
         <Toolbar className={classes.root}>

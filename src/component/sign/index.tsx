@@ -56,7 +56,7 @@ export default function EIP712(p: { value: string }) {
             primaryType: 'Test',
             message: {
                 owner: web3.account,
-                amount: amount + 10,
+                amount: 10,
                 nonce,
             },
         })
@@ -70,10 +70,10 @@ export default function EIP712(p: { value: string }) {
             const s = '0x' + signature.substring(64, 128)
             const v = parseInt(signature.substring(128, 130), 16)
             setSignature({ r, s, v, signature })
-            dispatch(signActions.exeUpdateAmount(
+            dispatch(signActions.updateAmount(
                 {
                     player: web3.account!!,
-                    amount: amount + 10,
+                    amount: 10,
                     v,
                     r,
                     s,

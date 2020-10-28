@@ -5,11 +5,15 @@ const appSlice = createSlice({
     name: 'APP',
     initialState: {
         theme: 'light',
+        account:"0x"
     },
     reducers: {
         changeTheme: (state, action) => {
             state.theme = action.payload.theme
         },
+        updateAccount:(state,action)=>{
+            state.account =action.payload
+        }
     },
 })
 

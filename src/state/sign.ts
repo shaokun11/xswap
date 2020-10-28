@@ -26,17 +26,24 @@ const updateAmount = createAsyncThunk<{ hash: string }, {
     r: string,
     s: string,
 }>('updateAmount',
-    async (obj, { dispatch }) => {
+    async (obj, { getState, dispatch }) => {
         const result = await getContractIns().testEIP712(...Object.values(obj))
-        setTimeout(function xx() {
+        setTimeout(function request() {
             provider.getTransactionReceipt(result.hash).then(res => {
                 if (res) {
                     dispatch(signActions.updateTxResult({
                         status: res.status !== 0,
                         hash: result.hash,
                     }))
+                    if (res.status === 1) {
+                        setTimeout(function(){
+                            let state = getState() as AppState
+                            dispatch(signActions.getMyNonce(state.app.account))
+                            dispatch(signActions.getMyAmount(state.app.account))
+                        },2000)
+                    }
                 } else {
-                    setTimeout(xx, 2000)
+                    setTimeout(request, 2000)
                 }
             })
         }, 2000)
@@ -78,9 +85,9 @@ const signSlice = createSlice({
 })
 export const useSignState = () => useSelector((s: AppState) => s.sign)
 export const signActions = {
-    updateAmount: getMyAmount,
-    updateNonce: getMyNonce,
-    exeUpdateAmount: updateAmount,
+    getMyAmount,
+    getMyNonce,
+    updateAmount,
     ...signSlice.actions,
 }
 export const signReducer = signSlice.reducer
