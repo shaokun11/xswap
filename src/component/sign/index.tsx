@@ -15,7 +15,7 @@ import {
 } from '@material-ui/core'
 import { makeStyles } from '@material-ui/styles'
 import { createStyles } from '@material-ui/core/styles'
-import { signActions, useSignState } from '../../state/sign'
+import { checkTxResult, signActions, useSignState } from '../../state/sign'
 import { useDispatch } from 'react-redux'
 import FileCopyIcon from '@material-ui/icons/FileCopy'
 import DoneIcon from '@material-ui/icons/Done'
@@ -121,6 +121,11 @@ export default function EIP712(p: { value: string }) {
     useEffect(() => {
         setSendBtnIsEnable(!hashArr.every(item => item.txResult > 0))
     }, [hashArr])
+
+    useEffect(() => {
+        web3.account && hashArr.filter(item => item.txResult === 0)
+                               .forEach(item => checkTxResult(item.hash, dispatch, web3.account!!))
+    }, [web3.account])
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setInputV(parseInt(event.target.value))
     }
@@ -171,23 +176,24 @@ export default function EIP712(p: { value: string }) {
                 </Card>
             </Card>
             <List className={classes.child}>
-                {hashArr.map((item,i) => {
-                    return <ListItem key={i}>
-                        {item.txResult === 0 ?
-                            <CircularProgress size={20} style={{ color: grey['300'] }} />
-                            : item.txResult === 1 ? <ListItemIcon className={classes2.root}>
-                                <DoneIcon style={{ color: green['300'] }} />
-                            </ListItemIcon> : <ListItemIcon className={classes2.root}>
-                                <CloseIcon style={{ color: red['300'] }} />
-                            </ListItemIcon>}
-                        <ListItemText style={{marginLeft:"10px"}}>
-                            {item.hash.slice(0, 12) + '******' + item.hash.slice(-12)}
-                        </ListItemText>
-                        <IconButton className={classes2.root}>
-                            <FileCopyIcon  />
-                        </IconButton>
-                    </ListItem>
-                })}
+                {web3.account && hashArr.filter(item => item.from === web3.account)
+                                        .map((item, i) => {
+                                            return <ListItem key={i}>
+                                                {item.txResult === 0 ?
+                                                    <CircularProgress size={20} style={{ color: grey['300'] }} />
+                                                    : item.txResult === 1 ? <ListItemIcon className={classes2.root}>
+                                                        <DoneIcon style={{ color: green['300'] }} />
+                                                    </ListItemIcon> : <ListItemIcon className={classes2.root}>
+                                                        <CloseIcon style={{ color: red['300'] }} />
+                                                    </ListItemIcon>}
+                                                <ListItemText style={{ marginLeft: '10px' }}>
+                                                    {item.hash.slice(0, 12) + '******' + item.hash.slice(-12)}
+                                                </ListItemText>
+                                                <IconButton className={classes2.root}>
+                                                    <FileCopyIcon />
+                                                </IconButton>
+                                            </ListItem>
+                                        })}
 
             </List>
         </Card>

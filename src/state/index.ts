@@ -10,9 +10,11 @@ const store = configureStore({
   },
   middleware: [
     ...getDefaultMiddleware(),
-    save({ states: PERSISTED_KEYS })
+    save({ states: PERSISTED_KEYS }),
   ],
   preloadedState: load({ states: PERSISTED_KEYS })
 });
+
+//@ts-ignore
 export type AppState = ReturnType<typeof store.getState>;
 export default store;

@@ -18,6 +18,26 @@ const getMyNonce = createAsyncThunk<{ nonce: number }, string>('getMyNonce',
         }
     })
 
+export function checkTxResult(tx: string, dispatch: any, account: string) {
+    setTimeout(function request() {
+        provider.getTransactionReceipt(tx).then(res => {
+            if (res) {
+                dispatch(signActions.updateTxResult({
+                    status: res.status !== 0 ? 1 : 2,
+                    hash: tx,
+                }))
+                if (res.status === 1) {
+                    setTimeout(function() {
+                        dispatch(signActions.getMyNonce(account))
+                        dispatch(signActions.getMyAmount(account))
+                    }, 500)
+                }
+            } else {
+                setTimeout(request, 2000)
+            }
+        })
+    }, 2000)
+}
 
 const updateAmount = createAsyncThunk<{ hash: string }, {
     player: string,
@@ -28,27 +48,11 @@ const updateAmount = createAsyncThunk<{ hash: string }, {
 }>('updateAmount',
     async (obj, { getState, dispatch }) => {
         const result = await getContractIns().testEIP712(...Object.values(obj))
-        setTimeout(function request() {
-            provider.getTransactionReceipt(result.hash).then(res => {
-                if (res) {
-                    dispatch(signActions.updateTxResult({
-                        status: res.status !== 0 ? 1 : 2,
-                        hash: result.hash,
-                    }))
-                    if (res.status === 1) {
-                        setTimeout(function() {
-                            let state = getState() as AppState
-                            dispatch(signActions.getMyNonce(state.app.account))
-                            dispatch(signActions.getMyAmount(state.app.account))
-                        }, 500)
-                    }
-                } else {
-                    setTimeout(request, 2000)
-                }
-            })
-        }, 2000)
+        let state = getState() as AppState
+        checkTxResult(result.hash, dispatch, state.app.account)
         return {
             hash: result.hash,
+            from: state.app.account,
         }
     })
 
@@ -58,7 +62,7 @@ const signSlice = createSlice({
     initialState: {
         amount: 0,
         nonce: 0,
-        hashArr: [] as { hash: string, txResult: 0 | 1 | 2 }[],
+        hashArr: [] as { hash: string, from: string, txResult: 0 | 1 | 2 }[],
     },
     reducers: {
         updateTxResult: ((state, action) => {
@@ -79,6 +83,7 @@ const signSlice = createSlice({
             state.hashArr.push({
                 hash: action.payload.hash,
                 txResult: 0,
+                from: action.payload.from,
             })
         },
     },
