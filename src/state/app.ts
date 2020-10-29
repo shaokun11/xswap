@@ -7,7 +7,6 @@ const appSlice = createSlice({
     initialState: {
         theme: 'light',
         account: '0x',
-        checked: false,
     },
     reducers: {
         changeTheme: (state, action) => {
@@ -16,9 +15,6 @@ const appSlice = createSlice({
         updateAccount: (state, action) => {
             state.account = action.payload
         },
-        updateCheck: (state => {
-            state.checked = true
-        }),
     },
 })
 

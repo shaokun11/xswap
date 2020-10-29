@@ -6,11 +6,16 @@ import * as serviceWorker from "./serviceWorker";
 import { Provider } from "react-redux";
 import store from "./state";
 import { getLibrary } from "./utils/web3";
+import {SnackbarProvider} from 'notistack'
 ReactDOM.render(
   <React.StrictMode>
     <Web3ReactProvider getLibrary={getLibrary}>
       <Provider store={store}>
-        <App />
+          <SnackbarProvider
+              autoHideDuration={1000}
+              maxSnack={2}>
+              <App />
+          </SnackbarProvider>
       </Provider>
     </Web3ReactProvider>
   </React.StrictMode>,

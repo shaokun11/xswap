@@ -1,9 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { useWeb3React } from '@web3-react/core'
+import { CopyToClipboard } from 'react-copy-to-clipboard'
+import { useSnackbar } from 'notistack'
 import {
     Button,
     Card,
-    CircularProgress,
+    CircularProgress, Container,
     IconButton,
     List,
     ListItem,
@@ -86,6 +88,12 @@ const useStyles = makeStyles((theme: Theme) =>
             margin: '0 20px',
             justifyContent: 'space-around',
         },
+        input: {
+            '& input::-webkit-outer-spin-button, & input::-webkit-inner-spin-button': {
+                '-webkit-appearance': 'none',
+                margin: 0,
+            },
+        },
     }),
 )
 
@@ -130,6 +138,16 @@ export default function EIP712(p: { value: string }) {
         setInputV(parseInt(event.target.value))
     }
 
+    const { enqueueSnackbar } = useSnackbar()
+    const onCopy = () => {
+        enqueueSnackbar('copy success', {
+            anchorOrigin:{
+                vertical: 'bottom',
+                horizontal: 'right',
+            },
+            //variant: 'info',
+        })
+    }
     const btnClickSign = () => {
         const data = JSON.stringify({
             types: eip712Obj.types,
@@ -186,12 +204,18 @@ export default function EIP712(p: { value: string }) {
                                                     </ListItemIcon> : <ListItemIcon className={classes2.root}>
                                                         <CloseIcon style={{ color: red['300'] }} />
                                                     </ListItemIcon>}
-                                                <ListItemText style={{ marginLeft: '10px' }}>
-                                                    {item.hash.slice(0, 12) + '******' + item.hash.slice(-12)}
+                                                <ListItemText style={{ textAlign: 'center' }}>
+                                                    {item.hash.slice(0, 16) + '******' + item.hash.slice(-16)}
                                                 </ListItemText>
-                                                <IconButton className={classes2.root}>
-                                                    <FileCopyIcon />
-                                                </IconButton>
+                                                <CopyToClipboard
+                                                    onCopy={onCopy}
+                                                    text={item.hash}>
+                                                    <IconButton
+                                                        className={classes2.root}>
+                                                        <FileCopyIcon />
+                                                    </IconButton>
+                                                </CopyToClipboard>
+
                                             </ListItem>
                                         })}
 
@@ -201,6 +225,7 @@ export default function EIP712(p: { value: string }) {
             <XTextField
                 defaultValue={10}
                 onChange={handleChange}
+                className={classes.input}
                 type="number" />
             <Button
                 disabled={sendBtnIsEnable}
