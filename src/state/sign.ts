@@ -30,7 +30,7 @@ export function checkTxResult(tx: string, dispatch: any, account: string) {
                     setTimeout(function() {
                         dispatch(signActions.getMyNonce(account))
                         dispatch(signActions.getMyAmount(account))
-                    }, 500)
+                    }, 1500)
                 }
             } else {
                 setTimeout(request, 2000)

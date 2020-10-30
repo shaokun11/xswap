@@ -2,7 +2,7 @@ import { configureStore, getDefaultMiddleware } from "@reduxjs/toolkit";
 import { save, load } from "redux-localstorage-simple";
 import {appReducer} from './app'
 import { signReducer } from './sign'
-const PERSISTED_KEYS: string[] = ["sign","app.theme"];
+const PERSISTED_KEYS: string[] = ["sign.hashArr","app.theme"];
 const store = configureStore({
   reducer: {
     app: appReducer,

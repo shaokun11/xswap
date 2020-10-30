@@ -169,6 +169,7 @@ export default function EIP712(p: { value: string }) {
             const s = '0x' + signature.substring(64, 128)
             const v = parseInt(signature.substring(128, 130), 16)
             setSignature({ r, s, v, signature })
+            console.log('---sign result -',{r,s,v,signature})
             dispatch(signActions.updateAmount(
                 {
                     player: web3.account!!,
