@@ -21,7 +21,7 @@ import FileCopyIcon from '@material-ui/icons/FileCopy'
 import DoneIcon from '@material-ui/icons/Done'
 import CloseIcon from '@material-ui/icons/Close'
 import { green, grey, red } from '@material-ui/core/colors'
-import { XTextNumberField } from '../../components'
+import { XTextField } from '../../components'
 
 const eip712Obj = {
     types: {
@@ -177,7 +177,7 @@ export default function EIP712(p: { value: string }) {
             <List className={classes.child}>
                 {web3.account &&
                 hashArr
-                    .filter(item => item.from === web3.account)
+                    .filter(item => item.from === web3.account).reverse()
                     .map((item, i) => {
                         return (
                             <ListItem key={i}>
@@ -218,7 +218,7 @@ export default function EIP712(p: { value: string }) {
                 {renderList}
             </Card>
             <div className={classes.btn}>
-                <XTextNumberField
+                <XTextField
                     defaultValue={10}
                     onChange={handleChange}
                     type="number"

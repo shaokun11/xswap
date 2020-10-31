@@ -1,11 +1,11 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
-import { getContractIns, provider } from '../utils/api'
+import { getEip712, provider } from '../utils/api'
 import { useSelector } from 'react-redux'
 import { AppState } from './index'
 
 const getMyAmount = createAsyncThunk<{ amount: number }, string>('getMyAmount',
     async (addr) => {
-        const amount = (await getContractIns().amounts(addr)).toNumber()
+        const amount = (await getEip712().amounts(addr)).toNumber()
         return {
             amount,
         }
@@ -14,29 +14,33 @@ const getMyAmount = createAsyncThunk<{ amount: number }, string>('getMyAmount',
 const getMyNonce = createAsyncThunk<{ nonce: number }, string>('getMyNonce',
     async (addr) => {
         return {
-            nonce: (await getContractIns().nonces(addr)).toNumber(),
+            nonce: (await getEip712().nonces(addr)).toNumber(),
         }
     })
 
 export function checkTxResult(tx: string, dispatch: any, account: string) {
+    let requestCount = 0
     setTimeout(function request() {
         provider.getTransactionReceipt(tx).then(res => {
             if (res) {
-                dispatch(signActions.updateTxResult({
-                    status: res.status !== 0 ? 1 : 2,
-                    hash: tx,
-                }))
+                requestCount++
                 if (res.status === 1) {
-                    setTimeout(function() {
-                        dispatch(signActions.getMyNonce(account))
-                        dispatch(signActions.getMyAmount(account))
-                    }, 1500)
+                    dispatch(signActions.getMyNonce(account))
+                    dispatch(signActions.getMyAmount(account))
+                }
+                if (requestCount >= 2) {
+                    dispatch(signActions.updateTxResult({
+                        status: res.status !== 0 ? 1 : 2,
+                        hash: tx,
+                    }))
+                } else {
+                    setTimeout(request, 2000)
                 }
             } else {
                 setTimeout(request, 2000)
             }
         })
-    }, 2000)
+    }, 1000)
 }
 
 const updateAmount = createAsyncThunk<{ hash: string }, {
@@ -47,8 +51,8 @@ const updateAmount = createAsyncThunk<{ hash: string }, {
     s: string,
 }>('updateAmount',
     async (obj, { getState, dispatch }) => {
-        const result = await getContractIns().testEIP712(...Object.values(obj))
-        let state = getState() as AppState
+        const result = await getEip712().testEIP712(...Object.values(obj))
+        let state = getState() as any
         checkTxResult(result.hash, dispatch, state.app.account)
         return {
             hash: result.hash,

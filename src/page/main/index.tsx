@@ -33,6 +33,7 @@ const XTabs = withStyles((theme: Theme) => ({
         display: 'flex',
         justifyContent: 'center',
         width: '100%',
+
         backgroundColor: 'transparent',
         '& > span': {
             maxWidth: 80,
@@ -45,7 +46,7 @@ const XTabs = withStyles((theme: Theme) => ({
 
 export default function() {
     const classes = useStyles()
-    const [v, setV] = useState('eip712')
+    const [v, setV] = useState('create2')
     const handleChange = (event: React.ChangeEvent<{}>, newValue: string) => {
         setV(newValue)
     }

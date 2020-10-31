@@ -5,7 +5,7 @@ import { useWeb3React } from '@web3-react/core'
 import { InjectedConnector } from '@web3-react/injected-connector'
 import { appAction, useApp } from '../../state/app'
 import { useDispatch } from 'react-redux'
-import { initTestContract } from '../../utils/api'
+import { initProvider } from '../../utils/api'
 import { signActions, useSignState } from '../../state/sign'
 import IconTheme from '@material-ui/icons/Brightness6'
 
@@ -46,7 +46,7 @@ export default function Header() {
         dispatch(appAction.changeTheme({ theme: theme === 'light' ? 'dark' : 'light' }))
     }
     useEffect(() => {
-        web3.account && initTestContract(web3.library, web3.account)
+        web3.account && initProvider(web3.library, web3.account)
     }, [web3.library])
 
     useEffect(() => {

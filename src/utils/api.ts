@@ -1,134 +1,638 @@
-import { ethers } from 'ethers'
+import { ethers, Signer } from 'ethers'
 
-const abi_test = [
+const eip712ContractAddress = '0x9F8C390b7048395d4DeBc7636031aD992115C303'
+const appleFactoryContractAddress = '0x9dF0A188465B367b97A7D9ce0f1DA38E7e8b5ed0'
+export let provider: ethers.providers.Provider
+export let signer: Signer
+
+export function getEip712(): ethers.Contract {
+    return new ethers.Contract(eip712ContractAddress, abi_eip712, provider).connect(
+        signer,
+    )
+}
+
+export function getAppleFactory(): ethers.Contract {
+    return new ethers.Contract(appleFactoryContractAddress, abi_apple_factory, provider).connect(
+        signer,
+    )
+}
+
+export function getApple(address: string): ethers.Contract {
+    return new ethers.Contract(address, abi_apple, provider).connect(
+        signer,
+    )
+}
+
+
+export function initProvider(p: any, account: string) {
+    provider = p
+    signer = p.getSigner(account)
+}
+
+const abi_eip712 = [
     {
-        'inputs': [
+        inputs: [
             {
-                'internalType': 'address',
-                'name': 'owner',
-                'type': 'address',
+                internalType: 'address',
+                name: 'owner',
+                type: 'address',
             },
             {
-                'internalType': 'uint256',
-                'name': 'amount',
-                'type': 'uint256',
+                internalType: 'uint256',
+                name: 'amount',
+                type: 'uint256',
             },
             {
-                'internalType': 'uint8',
-                'name': 'v',
-                'type': 'uint8',
+                internalType: 'uint8',
+                name: 'v',
+                type: 'uint8',
             },
             {
-                'internalType': 'bytes32',
-                'name': 'r',
-                'type': 'bytes32',
+                internalType: 'bytes32',
+                name: 'r',
+                type: 'bytes32',
             },
             {
-                'internalType': 'bytes32',
-                'name': 's',
-                'type': 'bytes32',
+                internalType: 'bytes32',
+                name: 's',
+                type: 'bytes32',
             },
         ],
-        'name': 'testEIP712',
-        'outputs': [],
-        'stateMutability': 'nonpayable',
-        'type': 'function',
+        name: 'testEIP712',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function',
     },
     {
-        'inputs': [],
-        'stateMutability': 'nonpayable',
-        'type': 'constructor',
+        inputs: [],
+        stateMutability: 'nonpayable',
+        type: 'constructor',
     },
     {
-        'inputs': [
+        inputs: [
             {
-                'internalType': 'address',
-                'name': '',
-                'type': 'address',
+                internalType: 'address',
+                name: '',
+                type: 'address',
             },
         ],
-        'name': 'amounts',
-        'outputs': [
+        name: 'amounts',
+        outputs: [
             {
-                'internalType': 'uint256',
-                'name': '',
-                'type': 'uint256',
+                internalType: 'uint256',
+                name: '',
+                type: 'uint256',
             },
         ],
-        'stateMutability': 'view',
-        'type': 'function',
+        stateMutability: 'view',
+        type: 'function',
     },
     {
-        'inputs': [],
-        'name': 'DOMAIN_SEPARATOR',
-        'outputs': [
+        inputs: [],
+        name: 'DOMAIN_SEPARATOR',
+        outputs: [
             {
-                'internalType': 'bytes32',
-                'name': '',
-                'type': 'bytes32',
+                internalType: 'bytes32',
+                name: '',
+                type: 'bytes32',
             },
         ],
-        'stateMutability': 'view',
-        'type': 'function',
+        stateMutability: 'view',
+        type: 'function',
     },
     {
-        'inputs': [
+        inputs: [
             {
-                'internalType': 'address',
-                'name': '',
-                'type': 'address',
+                internalType: 'address',
+                name: '',
+                type: 'address',
             },
         ],
-        'name': 'nonces',
-        'outputs': [
+        name: 'nonces',
+        outputs: [
             {
-                'internalType': 'uint256',
-                'name': '',
-                'type': 'uint256',
+                internalType: 'uint256',
+                name: '',
+                type: 'uint256',
             },
         ],
-        'stateMutability': 'view',
-        'type': 'function',
+        stateMutability: 'view',
+        type: 'function',
     },
     {
-        'inputs': [],
-        'name': 'rc',
-        'outputs': [
+        inputs: [],
+        name: 'rc',
+        outputs: [
             {
-                'internalType': 'address',
-                'name': '',
-                'type': 'address',
+                internalType: 'address',
+                name: '',
+                type: 'address',
             },
         ],
-        'stateMutability': 'view',
-        'type': 'function',
+        stateMutability: 'view',
+        type: 'function',
     },
     {
-        'inputs': [],
-        'name': 'TEST_TYPEHASH',
-        'outputs': [
+        inputs: [],
+        name: 'TEST_TYPEHASH',
+        outputs: [
             {
-                'internalType': 'bytes32',
-                'name': '',
-                'type': 'bytes32',
+                internalType: 'bytes32',
+                name: '',
+                type: 'bytes32',
             },
         ],
-        'stateMutability': 'view',
-        'type': 'function',
+        stateMutability: 'view',
+        type: 'function',
     },
 ]
-const testContractAddress = '0x9F8C390b7048395d4DeBc7636031aD992115C303'
-let testContractIns
-export let provider :ethers.providers.Provider
-
-export function getContractIns():ethers.Contract {
-    return testContractIns
-}
-
-export function initTestContract(p: any,account:string) {
-    provider = p
-    const  ins = new ethers.Contract(testContractAddress, abi_test, provider)
-    testContractIns = ins.connect(p.getSigner(account))
-    return testContractIns
-}
+const abi_apple_factory = [
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": false,
+                "internalType": "address",
+                "name": "maker",
+                "type": "address"
+            },
+            {
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "_id",
+                "type": "uint256"
+            },
+            {
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "_memory",
+                "type": "uint256"
+            },
+            {
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "_disk",
+                "type": "uint256"
+            },
+            {
+                "indexed": false,
+                "internalType": "string",
+                "name": "_color",
+                "type": "string"
+            },
+            {
+                "indexed": false,
+                "internalType": "address",
+                "name": "_apple",
+                "type": "address"
+            }
+        ],
+        "name": "AppleCreated",
+        "type": "event"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "_id",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "_memory",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "_disk",
+                "type": "uint256"
+            },
+            {
+                "internalType": "string",
+                "name": "_color",
+                "type": "string"
+            }
+        ],
+        "name": "makeApple",
+        "outputs": [
+            {
+                "internalType": "address",
+                "name": "apple",
+                "type": "address"
+            }
+        ],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "name": "apples",
+        "outputs": [
+            {
+                "internalType": "address",
+                "name": "",
+                "type": "address"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "",
+                "type": "address"
+            }
+        ],
+        "name": "checkApple",
+        "outputs": [
+            {
+                "internalType": "bool",
+                "name": "",
+                "type": "bool"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "_start",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "_end",
+                "type": "uint256"
+            }
+        ],
+        "name": "getAllApples",
+        "outputs": [
+            {
+                "internalType": "address[]",
+                "name": "_apples",
+                "type": "address[]"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "int256",
+                "name": "_id",
+                "type": "int256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "_memory",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "_disk",
+                "type": "uint256"
+            },
+            {
+                "internalType": "string",
+                "name": "_color",
+                "type": "string"
+            }
+        ],
+        "name": "getApple",
+        "outputs": [
+            {
+                "internalType": "address",
+                "name": "apple",
+                "type": "address"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "hash",
+        "outputs": [
+            {
+                "internalType": "bytes32",
+                "name": "",
+                "type": "bytes32"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "totalApple",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    }
+]
+const abi_apple = [
+    {
+        "inputs": [],
+        "stateMutability": "nonpayable",
+        "type": "constructor"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": false,
+                "internalType": "address",
+                "name": "_pre",
+                "type": "address"
+            },
+            {
+                "indexed": false,
+                "internalType": "address",
+                "name": "newPlayer",
+                "type": "address"
+            },
+            {
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "time",
+                "type": "uint256"
+            }
+        ],
+        "name": "PlayerUpdate",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": false,
+                "internalType": "address",
+                "name": "player",
+                "type": "address"
+            },
+            {
+                "indexed": false,
+                "internalType": "string",
+                "name": "from",
+                "type": "string"
+            },
+            {
+                "indexed": false,
+                "internalType": "string",
+                "name": "to",
+                "type": "string"
+            },
+            {
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "time",
+                "type": "uint256"
+            }
+        ],
+        "name": "Trace",
+        "type": "event"
+    },
+    {
+        "inputs": [],
+        "name": "actionCount",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "name": "actions",
+        "outputs": [
+            {
+                "internalType": "string",
+                "name": "from",
+                "type": "string"
+            },
+            {
+                "internalType": "string",
+                "name": "to",
+                "type": "string"
+            },
+            {
+                "internalType": "uint256",
+                "name": "time",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "color",
+        "outputs": [
+            {
+                "internalType": "string",
+                "name": "",
+                "type": "string"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "diskMemory",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "factory",
+        "outputs": [
+            {
+                "internalType": "address",
+                "name": "",
+                "type": "address"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "flashMemory",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "_start",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "_end",
+                "type": "uint256"
+            }
+        ],
+        "name": "getActions",
+        "outputs": [
+            {
+                "components": [
+                    {
+                        "internalType": "string",
+                        "name": "from",
+                        "type": "string"
+                    },
+                    {
+                        "internalType": "string",
+                        "name": "to",
+                        "type": "string"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "time",
+                        "type": "uint256"
+                    }
+                ],
+                "internalType": "struct Apple.Action[]",
+                "name": "atcs",
+                "type": "tuple[]"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "id",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "_player",
+                "type": "address"
+            },
+            {
+                "internalType": "uint256",
+                "name": "_id",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "_memory",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "_disk",
+                "type": "uint256"
+            },
+            {
+                "internalType": "string",
+                "name": "_color",
+                "type": "string"
+            }
+        ],
+        "name": "initialize",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "player",
+        "outputs": [
+            {
+                "internalType": "address",
+                "name": "",
+                "type": "address"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "string",
+                "name": "_from",
+                "type": "string"
+            },
+            {
+                "internalType": "string",
+                "name": "_to",
+                "type": "string"
+            }
+        ],
+        "name": "processAction",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "_player",
+                "type": "address"
+            }
+        ],
+        "name": "updatePlayer",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    }
+]
 
