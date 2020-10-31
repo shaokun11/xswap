@@ -1,12 +1,13 @@
 import React, { useState } from 'react'
 
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles'
-import Header from '../../component/header'
+import Header from '../header'
 import { Box, Card, Container, Paper, Tab, Tabs } from '@material-ui/core'
 import { withStyles } from '@material-ui/styles'
-import AddLiquidity from '../../component/add'
-import SwapToken from '../../component/swap'
-import EIP712 from '../../component/sign'
+import AddLiquidity from '../add'
+import SwapToken from '../swap'
+import EIP712 from '../sign'
+import Create2 from '../create2'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -58,7 +59,7 @@ export default function() {
                            centered
                            scrollButtons="off"
                            variant="fullWidth">
-                        {['add', 'swap', 'eip712'].map(a => <Tab
+                        {['add', 'swap', 'eip712', 'create2'].map(a => <Tab
                             value={a}
                             key={a}
                             label={a.toUpperCase()} />)}
@@ -66,6 +67,7 @@ export default function() {
                     <AddLiquidity value={v} />
                     <SwapToken value={v} />
                     <EIP712 value={v} />
+                    <Create2 value={v} />
                 </Card>
             </Paper>
         </div>
