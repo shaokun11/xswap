@@ -1,7 +1,7 @@
 import { ethers, Signer } from 'ethers'
 
 const eip712ContractAddress = '0x9F8C390b7048395d4DeBc7636031aD992115C303'
-const appleFactoryContractAddress = '0x9dF0A188465B367b97A7D9ce0f1DA38E7e8b5ed0'
+const appleFactoryContractAddress = '0xa31692095b0147136a6Faf0eA5a9810D79497F5d'
 export let provider: ethers.providers.Provider
 export let signer: Signer
 
@@ -192,11 +192,6 @@ const abi_apple_factory = [
     },
     {
         "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "_id",
-                "type": "uint256"
-            },
             {
                 "internalType": "uint256",
                 "name": "_memory",
@@ -539,6 +534,44 @@ const abi_apple = [
                 "internalType": "struct Apple.Action[]",
                 "name": "atcs",
                 "type": "tuple[]"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "getApple",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "_id",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "_memory",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "_disk",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "_count",
+                "type": "uint256"
+            },
+            {
+                "internalType": "address",
+                "name": "_player",
+                "type": "address"
+            },
+            {
+                "internalType": "string",
+                "name": "_color",
+                "type": "string"
             }
         ],
         "stateMutability": "view",

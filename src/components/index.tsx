@@ -1,4 +1,4 @@
-import { Radio, RadioProps, TextField, Theme, withStyles } from '@material-ui/core'
+import { Color, Radio, RadioProps, TextField, Theme, withStyles } from '@material-ui/core'
 import React, { useMemo } from 'react'
 import Select from '@material-ui/core/Select'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
@@ -22,18 +22,18 @@ export const XTextField = withStyles((t: Theme) => ({
 
 export const XRadio = withStyles(({
     root: {
-        color: (props: any) => {
+        color: (props: { cc: Color }) => {
             return props.cc[400]
         },
         '&$checked': {
-            color: (props: any) => props.cc[600],
+            color: (props: { cc: Color }) => props.cc[600],
         },
         checked: {},
     },
     //@ts-ignore
 }))((props: RadioProps) => <Radio color={'default'} {...props} />)
 
-export const XSelect = withStyles((theme:Theme)=>({
+export const XSelect = withStyles((theme: Theme) => ({
     select: {
         minWidth: 200,
         background: theme.palette.background.paper,
@@ -42,7 +42,7 @@ export const XSelect = withStyles((theme:Theme)=>({
         borderWidth: 2,
         borderRadius: 12,
         paddingLeft: 24,
-        color:theme.palette.text.primary,
+        color: theme.palette.text.primary,
         paddingTop: 10,
         paddingBottom: 10,
         boxShadow: '0px 5px 8px -3px rgba(0,0,0,0.14)',
@@ -74,8 +74,7 @@ export const XSelect = withStyles((theme:Theme)=>({
         background: theme.palette.background.paper,
         paddingTop: 0,
         paddingBottom: 0,
-        maxHeight:120,
-
+        height: 120,
         '& li': {
             fontWeight: 200,
             paddingTop: 2,
@@ -88,7 +87,7 @@ export const XSelect = withStyles((theme:Theme)=>({
             background: theme.palette.background.default,
         },
         '& li.Mui-selected:hover': {
-            background:theme.palette.background.default,
+            background: theme.palette.background.default,
         },
     },
 

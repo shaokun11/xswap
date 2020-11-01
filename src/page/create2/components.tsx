@@ -4,10 +4,19 @@ import Box from '@material-ui/core/Box'
 import { XRadio } from '../../components'
 import { blue, green, red, yellow } from '@material-ui/core/colors'
 
-export function PhoneTypeRadios({ list, title }: { list: string[]; title: string }) {
+export function PhoneTypeRadios({
+    list,
+    title,
+    onChange,
+}: {
+    list: string[]
+    title: string
+    onChange?: (color: string | number) => void
+}) {
     const [first, update] = React.useState(list[0])
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         update(event.target.value)
+        onChange && onChange(event.target.value)
     }
     const items = useMemo(
         () =>
@@ -32,10 +41,18 @@ export function PhoneTypeRadios({ list, title }: { list: string[]; title: string
 }
 
 const phoneColors = [red, blue, green, yellow]
-export function PhoneColorRadios({ list }: { list: string[] }) {
+
+export function PhoneColorRadios({
+    list,
+    onChange,
+}: {
+    list: string[]
+    onChange?: (color: string | number) => void
+}) {
     const [selectedPhoneColor, setSelectedPhoneColor] = React.useState(list[0])
     const handleChangeColor = (event: React.ChangeEvent<HTMLInputElement>) => {
         setSelectedPhoneColor(event.target.value)
+        onChange && onChange(event.target.value)
     }
     const phoneColor = useMemo(
         () =>
@@ -45,12 +62,12 @@ export function PhoneColorRadios({ list }: { list: string[] }) {
                     key={index}
                     onChange={handleChangeColor}
                     value={item}
-                    //@ts-ignore
                     cc={phoneColors[index]}
                 />
             )),
         [selectedPhoneColor]
     )
+
     return (
         <Box display={'flex'} alignItems={'center'}>
             <span style={{ marginLeft: 10 }}>Color: </span>{' '}
