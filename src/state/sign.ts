@@ -28,7 +28,7 @@ export function checkTxResult(tx: string, dispatch: any, account: string) {
                     dispatch(signActions.getMyNonce(account))
                     dispatch(signActions.getMyAmount(account))
                 }
-                if (requestCount >= 2) {
+                if (requestCount >= 3) {
                     dispatch(signActions.updateTxResult({
                         status: res.status !== 0 ? 1 : 2,
                         hash: tx,

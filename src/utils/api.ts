@@ -1,7 +1,7 @@
 import { ethers, Signer } from 'ethers'
 
 const eip712ContractAddress = '0x9F8C390b7048395d4DeBc7636031aD992115C303'
-const appleFactoryContractAddress = '0xa31692095b0147136a6Faf0eA5a9810D79497F5d'
+const appleFactoryContractAddress = '0xDc74C08Ea43f925b17E980d60811A306C109A81C'
 export let provider: ethers.providers.Provider
 export let signer: Signer
 
@@ -428,6 +428,11 @@ const abi_apple = [
         "name": "actions",
         "outputs": [
             {
+                "internalType": "uint256",
+                "name": "step",
+                "type": "uint256"
+            },
+            {
                 "internalType": "string",
                 "name": "from",
                 "type": "string"
@@ -441,6 +446,11 @@ const abi_apple = [
                 "internalType": "uint256",
                 "name": "time",
                 "type": "uint256"
+            },
+            {
+                "internalType": "address",
+                "name": "player",
+                "type": "address"
             }
         ],
         "stateMutability": "view",
@@ -516,6 +526,11 @@ const abi_apple = [
             {
                 "components": [
                     {
+                        "internalType": "uint256",
+                        "name": "step",
+                        "type": "uint256"
+                    },
+                    {
                         "internalType": "string",
                         "name": "from",
                         "type": "string"
@@ -529,6 +544,11 @@ const abi_apple = [
                         "internalType": "uint256",
                         "name": "time",
                         "type": "uint256"
+                    },
+                    {
+                        "internalType": "address",
+                        "name": "player",
+                        "type": "address"
                     }
                 ],
                 "internalType": "struct Apple.Action[]",
