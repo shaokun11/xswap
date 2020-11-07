@@ -8,6 +8,11 @@ import AddLiquidity from '../add'
 import SwapToken from '../swap'
 import EIP712 from '../sign'
 import Create2 from '../create2'
+import { useInterval } from 'react-use'
+import { useDispatch } from 'react-redux'
+import { useWeb3React } from '@web3-react/core'
+import { appAction } from '../../state/app'
+import { xSwapABPair, xSwapTokenA, xSwapTokenB } from '../../utils/api'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -46,10 +51,21 @@ const XTabs = withStyles((theme: Theme) => ({
 
 export default function() {
     const classes = useStyles()
-    const [v, setV] = useState('create2')
+    const [v, setV] = useState('add')
     const handleChange = (event: React.ChangeEvent<{}>, newValue: string) => {
         setV(newValue)
     }
+    const web3 = useWeb3React()
+    const dispatch = useDispatch()
+    useInterval(function() {
+        if (web3.account) {
+            dispatch(appAction.getReserve())
+            dispatch(appAction.getBalance({ token: xSwapTokenA, account: web3.account }))
+            dispatch(appAction.getBalance({ token: xSwapTokenB, account: web3.account }))
+            dispatch(appAction.updateLP({ token: xSwapABPair, account: web3.account }))
+        }
+    }, 10000)
+
     return (
         <div className={classes.root}>
             <Header />

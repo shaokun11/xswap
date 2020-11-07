@@ -58,26 +58,24 @@ export default function Header() {
     useEffect(function() {
         connect()
     }, [])
-    return <AppBar>
-        <Toolbar className={classes.root}>
-            <Typography variant="h6" className={classes.title}>
-                X-SWAP
-            </Typography>
-            <Grid item className={classes.account}>
-                {web3.account}
-            </Grid>
-            <IconButton onClick={switchTheme}>
-                <IconTheme  />
-            </IconButton>
-            <Button variant={'text'}
-                    onClick={connect}
-                    disabled={!!web3.account}>
-                {web3.account === undefined ?
-                    'connect' :
-                    web3.account?.slice(0, 4)
-                        .concat('****')
-                        .concat(web3.account?.slice(-8, -4))}
-            </Button>
-        </Toolbar>
-    </AppBar>
+    return (
+        <AppBar>
+            <Toolbar className={classes.root}>
+                <Typography variant="h6" className={classes.title}>
+                    X-SWAP
+                </Typography>
+                <Grid item className={classes.account}>
+                    {web3.account}
+                </Grid>
+                <IconButton onClick={switchTheme}>
+                    <IconTheme />
+                </IconButton>
+                <Button variant={'text'} onClick={connect} disabled={!!web3.account}>
+                    {web3.account === undefined
+                        ? 'connect'
+                        : web3.account?.slice(0, 4).concat('****').concat(web3.account?.slice(-4))}
+                </Button>
+            </Toolbar>
+        </AppBar>
+    )
 }

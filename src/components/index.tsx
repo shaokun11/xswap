@@ -1,8 +1,11 @@
-import { Color, Radio, RadioProps, TextField, Theme, withStyles } from '@material-ui/core'
+import { Box, Button, Card, Color, List, ListItem, ListItemText, Radio, RadioProps, TextField, Theme, withStyles } from '@material-ui/core'
 import React, { useMemo } from 'react'
 import Select from '@material-ui/core/Select'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 import { blue, green, red, yellow, grey } from '@material-ui/core/colors'
+import { appAction, useApp } from '../state/app'
+import { xSwapABPair, xSwapTokenA, xSwapTokenB } from '../utils/api'
+import { useDispatch } from 'react-redux'
 
 export const XTextField = withStyles((t: Theme) => ({
     root: {
@@ -116,3 +119,68 @@ export const XSelect = withStyles((theme: Theme) => ({
         }}
         {...other} />
 })
+const XCard = withStyles({
+    root: {
+        width: '100%',
+        background: ({ c }: any) => c,
+        height:"220px"
+    },
+})((p: any) => <Card {...p} />)
+
+export function Reserve() {
+    const { reserve, balance, liquidity } = useApp()
+    const dispatch = useDispatch()
+    const btnFault = (token: string) => () => {
+        dispatch(appAction.faucetToken(token))
+    }
+    return <XCard variant={'outlined'}>
+        <List>
+            <ListItem>
+                <ListItemText>
+                    <span style={{ display: 'flex' }}>
+                          <span>
+                          XSwapAB-Pair : {xSwapABPair.slice(0, 4) + '****' + xSwapABPair.slice(-4)}
+                    </span>
+                    <Box display={'inline-flex'} justifyContent={'space-around'} flexGrow={1}>
+                        <span> LP/Me: {!!liquidity ? liquidity?.amount : 0}</span>
+                        <span> LP/All: {!!liquidity ? liquidity?.total ?? 0 : 0}</span>
+                        <span> LP/Percent: {!!liquidity ? liquidity?.percent ?? 0 : 0} %</span>
+                    </Box>
+                    </span>
+                </ListItemText>
+            </ListItem>
+            <ListItem>
+                <ListItemText>
+                    <span style={{ display: 'flex' }}>
+                          <span>
+                         XSwapTokenA : {xSwapTokenA.slice(0, 4) + '****' + xSwapTokenA.slice(-4)}
+                    </span>
+                    <Box display={'inline-flex'} justifyContent={'space-around'} flexGrow={1}>
+                        <span> reserve: {!!reserve ? reserve[xSwapABPair]?.reserve0 : 0}</span>
+                        <span> balance: {!!balance ? balance[xSwapTokenA]?.amount ?? 0 : 0}</span>
+                    </Box>
+                        <Button variant={'outlined'} onClick={btnFault(xSwapTokenA)}>
+                            FAUCET
+                        </Button>
+                    </span>
+                </ListItemText>
+            </ListItem>
+            <ListItem>
+                <ListItemText>
+                    <span style={{ display: 'flex' }}>
+                          <span>
+                         XSwapTokenB : {xSwapTokenB.slice(0, 4) + '****' + xSwapTokenB.slice(-4)}
+                    </span>
+                    <Box display={'inline-flex'} justifyContent={'space-around'} flexGrow={1}>
+                        <span> reserve: {!!reserve ? reserve[xSwapABPair]?.reserve1 : 0}</span>
+                        <span> balance: {!!balance ? balance[xSwapTokenB]?.amount ?? 0 : 0}</span>
+                    </Box>
+                        <Button variant={'outlined'} onClick={btnFault(xSwapTokenB)}>
+                            FAUCET
+                        </Button>
+                    </span>
+                </ListItemText>
+            </ListItem>
+        </List>
+    </XCard>
+}

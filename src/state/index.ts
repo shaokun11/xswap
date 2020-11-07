@@ -8,7 +8,7 @@ const store = configureStore({
   reducer: {
     app: appReducer,
     create2: create2Reducer,
-    sign:signReducer
+    sign:signReducer,
   },
   middleware: [
     ...getDefaultMiddleware(),
