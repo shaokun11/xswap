@@ -10,9 +10,9 @@ const getReserve = createAsyncThunk('getReserve', async (v, { dispatch }) => {
     dispatch(
         appAction.updateReserve({
             token: xSwapABPair,
-            reserve0: parseFloat(reserve._reserve0.div(ethers.constants.WeiPerEther).toString()).toFixed(4),
-            reserve1: parseFloat(reserve._reserve1.div(ethers.constants.WeiPerEther).toString()).toFixed(4),
-        }),
+            reserve0: parseFloat(reserve._reserve0.div(ethers.constants.WeiPerEther).toString()).toFixed(0),
+            reserve1: parseFloat(reserve._reserve1.div(ethers.constants.WeiPerEther).toString()).toFixed(0),
+        })
     )
 })
 
@@ -24,14 +24,16 @@ const getBalance = createAsyncThunk<void, { token: string; account: string }>(
         dispatch(
             appAction.updateBalance({
                 token,
-                amount: parseFloat(balance.div(ethers.constants.WeiPerEther).toString()).toFixed(4),
-            }),
+                amount: parseFloat(balance.div(ethers.constants.WeiPerEther).toString()).toFixed(0),
+            })
         )
-    },
+    }
 )
 
-const updateLP = createAsyncThunk<{ total: string; amount: string; percent: string, token: string, account: string },
-    { token: string; account: string }>('updateLP', async ({ token, account }) => {
+const updateLP = createAsyncThunk<
+    { total: string; amount: string; percent: string; token: string; account: string },
+    { token: string; account: string }
+>('updateLP', async ({ token, account }) => {
     let ins = getPairInstance(token)
     let total = await ins.totalSupply()
     let balance = await ins.balanceOf(account)
@@ -40,7 +42,7 @@ const updateLP = createAsyncThunk<{ total: string; amount: string; percent: stri
         amount: balance.toString(),
         token,
         account,
-        percent: (parseFloat(balance.mul(10000).div(total).toString()) / 100).toFixed(4),
+        percent: (parseFloat(balance.mul(10000).div(total).toString()) / 100).toFixed(2),
     }
 })
 
@@ -67,16 +69,19 @@ const appSlice = createSlice({
         },
         updateReserve: (state, action) => {
             if (!state.reserve) state.reserve = {}
-            state.reserve[action.payload.token] = {
-                reserve0: action.payload.reserve0,
-                reserve1: action.payload.reserve1,
+            if (!state.reserve[action.payload.token])
+                state.reserve[action.payload.token] = { reserve0: '0', reserve1: '0' }
+            if (state.reserve[action.payload.token].reserve0 !== action.payload.reserve0) {
+                state.reserve[action.payload.token].reserve0 = action.payload.reserve0
+            }
+            if (state.reserve[action.payload.token].reserve1 !== action.payload.reserve1) {
+                state.reserve[action.payload.token].reserve1 = action.payload.reserve1
             }
         },
         updateBalance: (state, action) => {
             if (!state.balance) state.balance = {}
-            state.balance[action.payload.token] = {
-                amount: action.payload.amount,
-            }
+            if (!state.balance[action.payload.token]) state.balance[action.payload.token] = { amount: '0' }
+            state.balance[action.payload.token].amount = action.payload.amount
         },
     },
     extraReducers: {

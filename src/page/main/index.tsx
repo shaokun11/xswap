@@ -51,7 +51,7 @@ const XTabs = withStyles((theme: Theme) => ({
 
 export default function() {
     const classes = useStyles()
-    const [v, setV] = useState('add')
+    const [v, setV] = useState('swap')
     const handleChange = (event: React.ChangeEvent<{}>, newValue: string) => {
         setV(newValue)
     }
@@ -64,7 +64,7 @@ export default function() {
             dispatch(appAction.getBalance({ token: xSwapTokenB, account: web3.account }))
             dispatch(appAction.updateLP({ token: xSwapABPair, account: web3.account }))
         }
-    }, 10000)
+    }, 5000)
 
     return (
         <div className={classes.root}>

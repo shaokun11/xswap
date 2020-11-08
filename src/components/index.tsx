@@ -101,6 +101,11 @@ export const XSelect = withStyles((theme: Theme) => ({
         classes={{
             root: classes.select,
         }}
+        inputProps={{
+            defaultValue: '',
+
+        }}
+
         IconComponent={() => <ExpandMoreIcon className={classes.icon} />}
         MenuProps={{
             classes: {
